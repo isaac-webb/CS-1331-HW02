@@ -25,7 +25,11 @@ class YouTubeSimulator {
             int collabVideos = 0;
             int views = 0;
             int currWeek = 1;
-            int subs, weeks, newSubs, newVids, newViews;
+            int subs = 0;
+            int weeks = 0;
+            int newSubs = 0;
+            int newVids = 0;
+            int newViews = 0;
 
             // Prompt the user for their name, subscribers, and number of weeks
             // to simulate
@@ -52,6 +56,7 @@ class YouTubeSimulator {
                         + currWeek
                         + "? ");
                     newVids = input.nextInt();
+                    input.nextLine();
                 }
 
                 // Calculate new subscribers from weekly growth
@@ -76,7 +81,7 @@ class YouTubeSimulator {
                 newViews = newVids * (int) (subs * 0.6);
 
                 // Account for new views and view on old videos
-                views += newViews + videos * (int) (subs * 0.05);
+                views += newViews + (int) (videos * subs * 0.05);
 
                 // Print out the weekly summary
                 System.out.printf("\n%s, here is your weekly summary:\n", name);
@@ -88,17 +93,22 @@ class YouTubeSimulator {
                 // Add in new videos and subscribers
                 videos += newVids;
 
+                // Wait for the user to press enter before continuing
+                if (currWeek != weeks) {
+                    System.out.println("Press enter to go to the next week.");
+                    input.nextLine();
+                }
+
                 // Increment the current week
                 currWeek++;
             }
 
             // Wait for the user to press enter
-            System.out.print("Press enter to see your total summary. ");
-            input = input.reset();
+            System.out.println("Press enter to see your total summary.");
             input.nextLine();
 
             // Print the final simulation results
-            System.out.printf("\n%s, here is your total summary:\n", name);
+            System.out.printf("%s, here is your total summary:\n", name);
             System.out.printf("%13d: Total Videos\n", videos);
             System.out.printf("%13d: Collaboration Videos\n", collabVideos);
             System.out.printf("%13d: Views\n", views);
