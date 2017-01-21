@@ -8,11 +8,17 @@
  */
 
 import java.util.Scanner;
+import java.text.NumberFormat;
+import java.text.DecimalFormat;
 
 class YouTubeSimulator {
     public static void main(String[] args) {
         // Create the Scanner to get user input
         Scanner input = new Scanner(System.in);
+
+        // Create a number formatter
+        DecimalFormat df = (DecimalFormat) (NumberFormat.getInstance());
+        df.applyPattern("$########0.00");
 
         // Make a variable to store whether or not to simulate again
         boolean simulate = true;
@@ -88,7 +94,8 @@ class YouTubeSimulator {
                 System.out.printf("%13d: New Videos\n", newVids);
                 System.out.printf("%13d: New Subscribers\n", newSubs);
                 System.out.printf("%13d: Views\n", newViews);
-                System.out.printf("$%12.2f: Ad Revenue\n\n", newViews * 0.05);
+                System.out.printf("%13s: Ad Revenue\n\n",
+                                  df.format(newViews * 0.05));
 
                 // Add in new videos and subscribers
                 videos += newVids;
@@ -113,7 +120,7 @@ class YouTubeSimulator {
             System.out.printf("%13d: Collaboration Videos\n", collabVideos);
             System.out.printf("%13d: Views\n", views);
             System.out.printf("%13d: Subscribers\n", subs);
-            System.out.printf("$%12.2f: Ad Revenue\n\n", views * 0.05);
+            System.out.printf("%13s: Ad Revenue\n\n", df.format(views * 0.05));
 
             // Ask if they want to simulate again
             System.out.println(
