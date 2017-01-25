@@ -1,17 +1,25 @@
-/**
- * Created by iwebb on 20JAN17.
- *
- * This program simulates your fame as a YouTuber based on subscriber count,
- * videos, and weeks.
- *
- * I worked on the homework assignment alone, using only course materials.
- */
+// I worked on the homework assignment alone, using only course materials.
 
 import java.util.Scanner;
+import java.util.InputMismatchException;
 import java.text.NumberFormat;
 import java.text.DecimalFormat;
 
-class YouTubeSimulator {
+/**
+ * Simulates your fame as a YouTuber based on subscriber count, videos, and
+ * weeks.
+ *
+ * @author iwebb6
+ */
+
+public class YouTubeSimulator {
+
+    /**
+     * Responsible for everything: getting user input, running the simulation,
+     * and doing all calculations.
+     *
+     * @param args Command line arguments, all of which will be ignored
+     */
     public static void main(String[] args) {
         // Create the Scanner to get user input
         Scanner input = new Scanner(System.in);
@@ -31,8 +39,8 @@ class YouTubeSimulator {
             int collabVideos = 0;
             int views = 0;
             int currWeek = 1;
-            int subs = 0;
-            int weeks = 0;
+            int subs = -1;
+            int weeks = -1;
             int newSubs = 0;
             int newVids = 0;
             int newViews = 0;
@@ -41,10 +49,44 @@ class YouTubeSimulator {
             // to simulate
             System.out.print("What is your name? ");
             name = input.nextLine();
-            System.out.print("How many subscribers do you have? ");
-            subs = input.nextInt();
-            System.out.print("How many weeks would you like to simulate? ");
-            weeks = input.nextInt();
+
+            // Catch sneaky TAs
+            while (subs < 0) {
+                System.out.print("How many subscribers do you have? ");
+
+                try {
+                    subs = input.nextInt();
+                } catch (InputMismatchException e) {
+                    subs = -1;
+                }
+                input.nextLine();
+
+                // Let the user know they messed up
+                if (subs < 0) {
+                    System.out.println(
+                        "Hey now, that wasn't what I asked for... "
+                        + "Nonnegative integers please :)");
+                }
+            }
+
+            // Sneaky once again... Tsk-tsk
+            while (weeks < 0) {
+                System.out.print("How many weeks would you like to simulate? ");
+
+                try {
+                    weeks = input.nextInt();
+                } catch (InputMismatchException e) {
+                    weeks = -1;
+                }
+                input.nextLine();
+
+                // Print out our nice error message
+                if (weeks < 0) {
+                    System.out.println(
+                        "Hey now, that wasn't what I asked for... "
+                        + "Nonnegative integers please :)");
+                }
+            }
 
             // Begin the simulation
             System.out.printf("\nSimulating %d weeks:\n\n", weeks);
@@ -54,23 +96,33 @@ class YouTubeSimulator {
                 newVids = 0;
                 newViews = 0;
 
-                // Ask the user how many videos they want to make, making sure
-                // that they are choosing 1-5, inclusive
+                // Ask how many videos to make, make sure it's 1-5, inclusive
                 while (newVids < 1 || newVids > 5) {
                     System.out.print(
                         "How many videos would you like to make during week "
                         + currWeek
-                        + "? ");
-                    newVids = input.nextInt();
+                        + " (1-5)? ");
+
+                    // Why even try... :D
+                    try {
+                        newVids = input.nextInt();
+                    } catch (InputMismatchException e) {
+                        newVids = -1;
+                    }
                     input.nextLine();
+
+                    // Let 'em know
+                    if (newVids < 1 || newVids > 5) {
+                        System.out.println(
+                            "Come on... Integers 1-5 inclusive... pls");
+                    }
                 }
 
                 // Calculate new subscribers from weekly growth
                 newSubs = (int) (subs * 0.02);
 
-                // Check to see if it is a collaboration week
+                // Check for collaboration week, and do calculations if needed
                 if (currWeek % 4 == 0) {
-                    // Calculate the subscribers from collaboration
                     int collabSubs = (int) ((subs + newSubs) * 1.2 * 0.3);
                     newSubs += collabSubs;
                     collabVideos += 1;
@@ -80,14 +132,11 @@ class YouTubeSimulator {
                         + " subscribers.");
                 }
 
-                // Account for the new subscribers
+                // Account for the new subscribers, views, and videos
                 subs += newSubs;
-
-                // Calculate new views
                 newViews = newVids * (int) (subs * 0.6);
-
-                // Account for new views and view on old videos
                 views += newViews + (int) (videos * subs * 0.05);
+                videos += newVids;
 
                 // Print out the weekly summary
                 System.out.printf("\n%s, here is your weekly summary:\n", name);
@@ -97,24 +146,17 @@ class YouTubeSimulator {
                 System.out.printf("%13s: Ad Revenue\n\n",
                                   df.format(newViews * 0.05));
 
-                // Add in new videos and subscribers
-                videos += newVids;
-
-                // Wait for the user to press enter before continuing
+                // Wait for the user to press enter, then increment the week
                 if (currWeek != weeks) {
                     System.out.println("Press enter to go to the next week.");
                     input.nextLine();
                 }
-
-                // Increment the current week
                 currWeek++;
             }
 
-            // Wait for the user to press enter
+            // Wait for the user to press enter, then print the results
             System.out.println("Press enter to see your total summary.");
             input.nextLine();
-
-            // Print the final simulation results
             System.out.printf("%s, here is your total summary:\n", name);
             System.out.printf("%13d: Total Videos\n", videos);
             System.out.printf("%13d: Collaboration Videos\n", collabVideos);
@@ -125,7 +167,7 @@ class YouTubeSimulator {
             // Ask if they want to simulate again
             System.out.println(
                 "Would you like to simulate again? Enter \"Y\" if so.");
-            simulate = input.nextLine().equals("Y");
+            simulate = input.nextLine().equalsIgnoreCase("Y");
         }
     }
 }
